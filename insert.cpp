@@ -5,10 +5,9 @@ using namespace std;
 
 kvStore kv(10000000);
 
+string letters , letters1;
+
 Slice *random_key(){
-	string letters = "";
-	for(char i = 'a';i<='z';i++)letters+=i;
-	for(char i = 'A';i<='Z';i++)letters+=i;
 	Slice *ret = new Slice;
 	ret->size = 64;
 	ret->data = (char *)malloc(64*sizeof(char));
@@ -18,13 +17,11 @@ Slice *random_key(){
 }
 
 Slice *random_value(){
-	string letters = "";
-	for(int i = 32;i<=127;i++)letters+=char(i);
 	Slice *ret = new Slice;
 	ret->size = 255;
 	ret->data = (char *)malloc(255*sizeof(char));
 	for(int i=0;i<255;i++)
-		ret->data[i] = letters[rand()%96];
+		ret->data[i] = letters1[rand()%96];
 	return ret;
 }
 
@@ -49,12 +46,21 @@ void checktime()
 
 int main(void)
 {
+	letters = "";
+	for(char i = 'a';i<='z';i++)letters+=i;
+	for(char i = 'A';i<='Z';i++)letters+=i;
+
+	letters1 = "";
+	for(int i = 32;i<=127;i++)letters1+=char(i);
+
 	for(int i=0;i<1e7;i++)
 	{
 		arr[i].first = random_key();
 		arr[i].second = random_value();
 	}
+
 	cout<<"Done Making\n";
 	checktime();
+
 	return 0;
 }

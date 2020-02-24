@@ -11,19 +11,18 @@ struct Slice{
 class Node
 {
 	public:
-	Slice key;
- 	Slice value;
-	Node *left;
-	Node *right;
+	Slice key,value;
+	Node *left,*right;
 	int height,cnt;
 };
 
 Node *globalroot = NULL;
 
-int comp(Slice a,Slice b)
+inline int comp(Slice a,Slice b)
 {
 	uint8_t i = 0;
-	for(;i<min(a.size,b.size);i++)
+	int mini = min(a.size,b.size);
+	for(;i<mini;i++)
 	{
 		if(a.data[i] != b.data[i])
 		{
@@ -42,14 +41,14 @@ int comp(Slice a,Slice b)
 	return strcmp(a.data,b.data);
 }
 
-int height(Node *N)
+inline int height(Node *N)
 {
 	if(N == NULL)
 		return 0;
 	return N->height;
 }
 
-int count(Node *N)
+inline int count(Node *N)
 {
 	if(N == NULL)
 		return 0;
@@ -72,9 +71,9 @@ Node *rightRotate(Node *y)
 {
 	Node *x = y->left;
 	Node *T2 = x->right;
-	int cnt2 = count(x);
-	int cnt3 = count(T2);
-	y->cnt -= (cnt2 - cnt3);
+	register int cnt2 = count(x);
+	register int cnt3 = count(T2);
+	y->cnt += (cnt3 - cnt2);
 	x->cnt += (y->cnt - cnt3);
 	x->right = y;
 	y->left = T2;
@@ -89,8 +88,8 @@ Node *leftRotate(Node *x)
 {
 	Node *y = x->right;
 	Node *T2 = y->left;
-	int cnt1 = count(y);
-	int cnt3 = count(T2);
+	register int cnt1 = count(y);
+	register int cnt3 = count(T2);
 	x->cnt += (cnt3 - cnt1);
 	y->cnt += (x->cnt - cnt3);
 	y->left = x;
@@ -102,7 +101,7 @@ Node *leftRotate(Node *x)
 	return y;
 }
 
-int getBalance(Node *N)
+inline int getBalance(Node *N)
 {
 	if (N == NULL)
 		return 0;
@@ -122,10 +121,10 @@ Node* insert(Node* node, Slice key, Slice value)
 {
 	if (node == NULL)
 		return(newNode(key,value));
-
-	if (comp(key,node->key)<0)
+	register int tmpvar = comp(key,node->key);
+	if (tmpvar<0)
 		node->left = insert(node->left, key, value);
-	else if (comp(key,node->key)>0)
+	else if (tmpvar>0)
 		node->right = insert(node->right, key, value);
 	else
 	{
@@ -172,9 +171,10 @@ Node* deleteNode(Node* root, Slice key)
 {
 	if (root == NULL)
 		return root;
-	if ( comp(key,root->key)<0 )
+	register int tmpvar = comp(key,root->key);
+	if ( tmpvar<0 )
 		root->left = deleteNode(root->left, key);
-	else if( comp(key,root->key)>0)
+	else if( tmpvar>0)
 		root->right = deleteNode(root->right, key);
 	else
 	{
@@ -241,10 +241,11 @@ Node* deleteNode(Node* root, Slice key)
 
 Node* getNode(Node* root, Slice key)
 {
-	if ( comp(key,root->key)<0 )
+	register int tmpvar = comp(key,root->key);
+	if ( tmpvar<0 )
 		root->left = getNode(root->left, key);
 
-	else if( comp(key,root->key)>0 )
+	else if( tmpvar>0 )
 		root->right = getNode(root->right, key);
 
 	else
@@ -312,9 +313,10 @@ Node* findNode(Node* root, Slice key)
 {
 	if (root == NULL)
 		return root;
-	if ( comp(key,root->key)<0 )
+	register int tmpvar = comp(key,root->key);
+	if ( tmpvar<0 )
 		return findNode(root->left, key);
-	else if( comp(key,root->key)>0 )
+	else if( tmpvar>0 )
 		return findNode(root->right, key);
 	else
 	{
@@ -378,7 +380,6 @@ public:
 
 	bool put(Slice &key, Slice &value){
 		pthread_mutex_lock(&lock);
-		int flag=0;
 		Node *ret = findNode(globalroot,key);
 		globalroot = insert(globalroot, key, value);
 		pthread_mutex_unlock(&lock);
