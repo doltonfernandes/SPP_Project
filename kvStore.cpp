@@ -25,15 +25,15 @@ int comp(Slice &a,Slice &b)
 	{
 		if(a.size > b.size)
 		{
-			return 1;
+			return (1);
 		}
 		else if(a.size == b.size)
 		{
-			return 0;
+			return (0);
 		}
 		else
 		{
-			return -1;
+			return (-1);
 		}
 	}
 	else
@@ -43,15 +43,15 @@ int comp(Slice &a,Slice &b)
 inline int height(Node *N)
 {
 	if(N == NULL)
-		return 0;
-	return N->height;
+		return (0);
+	return (N->height);
 }
 
 inline int count(Node *N)
 {
 	if(N == NULL)
-		return 0;
-	return N->cnt;
+		return (0);
+	return (N->cnt);
 }
 
 Node* newNode(Slice key, Slice value)
