@@ -80,7 +80,7 @@ Node *rightRotate(Node *y)
 					height(y->right)) + 1;
 	x->height = max(height(x->left),
 					height(x->right)) + 1;
-	return (x);
+	return x;
 }
 
 Node *leftRotate(Node *x)
@@ -97,7 +97,7 @@ Node *leftRotate(Node *x)
 					height(x->right)) + 1;
 	y->height = max(height(y->left),
 					height(y->right)) + 1;
-	return (y);
+	return y;
 }
 
 inline int getBalance(Node *N)
@@ -163,7 +163,7 @@ inline Node * minValueNode(Node* node)
     Node* current = node;
     while (current->left != NULL)
         current = current->left;
-    return current;
+    return (current);
 }
 
 Node* deleteNode(Node* root, Slice key)
@@ -253,7 +253,7 @@ Node* findNode(Node* root, Slice key)
 		else if( tmpvar>0 )
 			tmproot = tmproot->right;
 		else
-			return tmproot;
+			return (tmproot);
 	}
 }
 
@@ -272,6 +272,7 @@ void preOrder(Node *root)
 
 Node *getnth(Node *root,int index)
 {
+	while(root!=NULL)
 	if(root == NULL)
 	{
 		return root;
@@ -290,7 +291,7 @@ Node *getnth(Node *root,int index)
 	}
 }
 
-pthread_mutex_t lock;
+pthread_mutex_t lock1;
 
 class kvStore{
 
@@ -299,9 +300,9 @@ public:
 	kvStore(uint64_t max_entries){};
 
 	bool get(Slice &key,Slice &value){
-		pthread_mutex_lock(&lock);
+		pthread_mutex_lock(&lock1);
 		Node* ret = findNode(globalroot,key);
-		pthread_mutex_unlock(&lock);
+		pthread_mutex_unlock(&lock1);
 		if(ret==NULL)
 			return false;
 		else
@@ -312,26 +313,26 @@ public:
 	}
 
 	bool put(Slice &key, Slice &value){
-		pthread_mutex_lock(&lock);
+		pthread_mutex_lock(&lock1);
 		Node *ret = findNode(globalroot,key);
 		globalroot = insert(globalroot, key, value);
-		pthread_mutex_unlock(&lock);
+		pthread_mutex_unlock(&lock1);
 		if(ret==NULL)
 			return false;
 		return true;
 	}
 
 	bool del(Slice &key){
-		pthread_mutex_lock(&lock);
+		pthread_mutex_lock(&lock1);
 		globalroot = deleteNode(globalroot,key);
-		pthread_mutex_unlock(&lock);
+		pthread_mutex_unlock(&lock1);
 		return true;
 	}
 
 	bool get(int N,Slice& key, Slice& value){
-		pthread_mutex_lock(&lock);
+		pthread_mutex_lock(&lock1);
 		Node *tempkey = getnth(globalroot,N);
-		pthread_mutex_unlock(&lock);
+		pthread_mutex_unlock(&lock1);
 		if(tempkey == NULL)
 		{
 			return false;
@@ -342,9 +343,9 @@ public:
 	}
 
 	bool del(int N){
-		pthread_mutex_lock(&lock);
+		pthread_mutex_lock(&lock1);
 		Node *l = getnth(globalroot,N);
-		pthread_mutex_unlock(&lock);
+		pthread_mutex_unlock(&lock1);
 		if(l==NULL)
 		{
 			return false;
