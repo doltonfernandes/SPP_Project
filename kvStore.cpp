@@ -270,9 +270,8 @@ void preOrder(Node *root)
 	}
 }
 
-Node *getnth(Node *root,int index)
+inline Node *getnth(Node *root,int index)
 {
-	while(root!=NULL)
 	if(root == NULL)
 	{
 		return root;
