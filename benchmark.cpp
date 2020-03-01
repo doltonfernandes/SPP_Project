@@ -119,7 +119,7 @@ void *myThreadFun(void *vargp)
 
 int main()
 {
-	for(int i=0;i<100000;i++)
+	for(int i=0;i<40000;i++)
 	{
 		string key = random_key(rand()%64 + 1);
 		string value = random_value(rand()%255 + 1);

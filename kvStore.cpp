@@ -18,27 +18,26 @@ class Node
 
 Node *globalroot = NULL;
 
-inline int comp(Slice a,Slice b)
+int comp(Slice &a,Slice &b)
 {
-	uint8_t i = 0;
-	int mini = min(a.size,b.size);
-	for(;i<mini;i++)
+	int tmp = strncmp(a.data,b.data,min(a.size,b.size));
+	if(tmp == 0)
 	{
-		if(a.data[i] != b.data[i])
+		if(a.size > b.size)
 		{
-			return a.data[i] - b.data[i];
+			return 1;
+		}
+		else if(a.size == b.size)
+		{
+			return 0;
+		}
+		else
+		{
+			return -1;
 		}
 	}
-
-	if(a.size == b.size)
-		return 0;
-	
-	if(i == a.size)
-		return -b.data[i];
 	else
-		return a.data[i];
-
-	return strcmp(a.data,b.data);
+		return tmp;
 }
 
 inline int height(Node *N)
@@ -159,7 +158,7 @@ Node* insert(Node* node, Slice key, Slice value)
 	return node;
 }
 
-Node * minValueNode(Node* node)
+inline Node * minValueNode(Node* node)
 {
     Node* current = node;
     while (current->left != NULL)
@@ -238,90 +237,24 @@ Node* deleteNode(Node* root, Slice key)
 	return root;
 }
 
-
-Node* getNode(Node* root, Slice key)
-{
-	register int tmpvar = comp(key,root->key);
-	if ( tmpvar<0 )
-		root->left = getNode(root->left, key);
-
-	else if( tmpvar>0 )
-		root->right = getNode(root->right, key);
-
-	else
-	{
-		if( (root->left == NULL) ||
-			(root->right == NULL) )
-		{
-			Node *temp = root->left ?
-						root->left :
-						root->right;
-
-			if (temp == NULL)
-			{
-				temp = root;
-			}
-			else
-			*root = *temp;
-			free(temp);
-            return root;
-		}
-		else
-		{
-			Node* temp = minValueNode(root->right);
-			root->key = temp->key;
-
-			root->right = getNode(root->right,
-									temp->key);
-		}
-	}
-
-	if (root == NULL)
-	return root;
-
-	root->height = 1 + max(height(root->left),
-						height(root->right));
-
-	int balance = getBalance(root);
-
-	if (balance > 1 &&
-		getBalance(root->left) >= 0)
-		return rightRotate(root);
-
-	if (balance > 1 &&
-		getBalance(root->left) < 0)
-	{
-		root->left = leftRotate(root->left);
-		return rightRotate(root);
-	}
-
-	if (balance < -1 &&
-		getBalance(root->right) <= 0)
-		return leftRotate(root);
-
-	if (balance < -1 &&
-		getBalance(root->right) > 0)
-	{
-		root->right = rightRotate(root->right);
-		return leftRotate(root);
-	}
-
-	return root;
-}
-
 Node* findNode(Node* root, Slice key)
 {
-	if (root == NULL)
-		return root;
-	register int tmpvar = comp(key,root->key);
-	if ( tmpvar<0 )
-		return findNode(root->left, key);
-	else if( tmpvar>0 )
-		return findNode(root->right, key);
-	else
+	Node* tmproot = root;
+	int tmpvar;
+	while(1)
 	{
-		return root;
-  	}
+		if(tmproot==NULL)
+		{
+			return tmproot;
+		}
+		tmpvar = comp(key,tmproot->key);
+		if ( tmpvar<0 )
+			tmproot = tmproot->left;
+		else if( tmpvar>0 )
+			tmproot = tmproot->right;
+		else
+			return tmproot;
+	}
 }
 
 void preOrder(Node *root)
