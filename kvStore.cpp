@@ -37,7 +37,7 @@ int comp(Slice &a,Slice &b)
 		}
 	}
 	else
-		return tmp;
+		return (tmp);
 }
 
 inline int height(Node *N)
@@ -80,7 +80,7 @@ Node *rightRotate(Node *y)
 					height(y->right)) + 1;
 	x->height = max(height(x->left),
 					height(x->right)) + 1;
-	return x;
+	return (x);
 }
 
 Node *leftRotate(Node *x)
@@ -97,7 +97,7 @@ Node *leftRotate(Node *x)
 					height(x->right)) + 1;
 	y->height = max(height(y->left),
 					height(y->right)) + 1;
-	return y;
+	return (y);
 }
 
 inline int getBalance(Node *N)
